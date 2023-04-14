@@ -1,0 +1,23 @@
+#mainHead {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: lightgray;
+    /* margin-bottom: 2rem; */
+}
+
+#appName {
+    color: #333;
+    background-color: lightskyblue;
+    padding: 1rem;
+    font-size: 1.5rem;
+    border-radius: 1rem;
+
+}
+
+#userButton {
+    background-color: lightskyblue;
+    padding: 1rem;
+    font-size: 1.5rem;
+    border-radius: 1rem;
+}
