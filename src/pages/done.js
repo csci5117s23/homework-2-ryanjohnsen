@@ -15,7 +15,6 @@ export default function Todos() {
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const [todos, setTodos] = useState([]);
     const router = useRouter();
-    const [todoText, setTodoText] = useState("");
 
     // const token = await getToken({ template: "codehooks" });
 
@@ -42,39 +41,10 @@ export default function Todos() {
         }
         fetchData();
     }, [userId]);
-            
-    async function addTodoItem() {
-        console.log("Adding todo item");
-        console.log(todoText);
         
-        setTodoText("");
 
-        const token = await getToken({ template: "codehooks" });
-        console.log(token)
-        let response = await fetch(backend_base + "/todoitems", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                text: todoText
-            })
-        });
-
-        response = await fetch(backend_base + "/todoitems", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-        let data = await response.json();
-        setTodos(data.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1));
-    }
-
-    function routeToDonePage() {
-        router.push("/done");
+    function routeToTodos() {
+        router.push("/todos");
     }
 
     return (
@@ -91,17 +61,17 @@ export default function Todos() {
 
                     <div id={styles.todoContainer}>
                         <div id={styles.todoHeader}>
-                            <h1> Todo Items </h1>
+                            <h1> Done Todo Items </h1>
                             <div> 
-                                <input id={styles.textInput} value={todoText} onChange={e => setTodoText(e.target.value)} type="text" size="30" placeholder="Add a todo item"></input>
-                                <button id={styles.addTodoButton} onClick={addTodoItem}> Add </button>
-                                <button id={styles.seeDoneButton} onClick={routeToDonePage}> See Done </button>
+                                {/* <input id={styles.textInput} value={todoText} onChange={e => setTodoText(e.target.value)} type="text" size="30" placeholder="Add a todo item"></input> */}
+                                {/* <button id={styles.addTodoButton} onClick={addTodoItem}> Add </button> */}
+                                <button id={styles.seeTodoButton} onClick={routeToTodos}> See Not Done </button>
                             </div>
                         </div>
 
                         <div id={styles.todoItems}>
                             {todos.map((todo) => (
-                                !todo.done ? <TodoItem key={todo._id} todo={todo}></TodoItem> : <></>
+                                todo.done ? <TodoItem key={todo._id} todo={todo}></TodoItem> : <></>
                             ))}
                         </div>
 

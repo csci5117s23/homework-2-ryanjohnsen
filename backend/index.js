@@ -47,7 +47,7 @@ app.use('/todoitems/:id', async (req, res, next) => {
   const conn = await Datastore.open();
   try {
       console.log(id);
-      const doc = await conn.getOne('pres', id)
+      const doc = await conn.getOne('todoitems', id)
       if (doc.userId != userId) {
           // authenticate duser doesn't own this document.
           res.status(403).end(); // end is like "quit this request"

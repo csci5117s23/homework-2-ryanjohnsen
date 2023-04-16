@@ -51,6 +51,22 @@
     font-size: 14pt;
 }
 
+#seeDoneButton {
+    margin: 0.5rem;
+    padding: 0.25rem;
+    height: 2rem;
+    font-size: 14pt;
+    background-color: seagreen;
+}
+
+#seeTodoButton {
+    margin: 0.5rem;
+    padding: 0.25rem;
+    height: 2rem;
+    font-size: 14pt;
+    background-color: rgb(227, 151, 10);
+}
+
 #todoItems {
     display: flex;
     flex-direction: column;
