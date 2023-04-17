@@ -11,11 +11,12 @@ const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 export default function TodoItemPage() {
     const router = useRouter()
     const id = router.query.id
+    // console.log(id)
     const [todos, setTodos] = useState("")
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const [done, setDone] = useState(false);
     const [todoText, setTodoText] = useState("");
-    const [newText, setNewText] = useState("");
+    // const [newText, setNewText] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,15 +29,14 @@ export default function TodoItemPage() {
             const response = await fetch(backend_base + "/todoitems/" + id, {
                 method: "GET",
                 headers: {
+                    // "Accept": "application/json",
+                    // 'Content-Type': 'application/json',
                     "Authorization": "Bearer " + token
                 }
             });
             
-            const data = await response.json();
-            setTodos(data);
-            setDone(data.done);
-            setTodoText(data.text);
-            setNewText(data.text);
+            let data = await response.text();
+            setTodoText(data);
         }
         fetchData();
     }, [userId]);
@@ -50,7 +50,7 @@ export default function TodoItemPage() {
         setDone(!done);
 
         const token = await getToken({ template: "codehooks" });
-        await fetch(backend_base + "/todoitems/" + todos._id, {
+        await fetch(backend_base + "/todoitems/" + id, {
             method: "PATCH",
             headers: {
                 "Accept": "application/json",
@@ -64,20 +64,21 @@ export default function TodoItemPage() {
     }
 
     async function saveChanges() {
+        // setTodoText("");
 
         const token = await getToken({ template: "codehooks" });
-        await fetch(backend_base + "/todoitems/" + todos._id, {
+        await fetch(backend_base + "/todoitems/" + id, {
             method: "PATCH",
             headers: {
-                "Accept": "application/json",
+                // "Accept": "application/json",
                 'Content-Type': 'application/json',
                 "Authorization": "Bearer " + token
             },
             body: JSON.stringify({
-                text: newText
+                text: todoText
             })
         });
-        setTodoText(newText);
+
 
     }
     
@@ -106,7 +107,7 @@ export default function TodoItemPage() {
                         <div id={styles.todoItems}>
                             <div id={styles.todoContainer2}>
                                 <div id={styles.textSide}> 
-                                    <textarea id={styles.textareaInput} value={todoText} onChange={(e) =>  {setNewText(e.target.value); setTodoText(e.target.value);}}  cols="30" rows="5"></textarea>
+                                    <textarea id={styles.textareaInput} value={todoText} onChange={(e) => setTodoText(e.target.value)}  cols="30" rows="5"></textarea>
                                 </div>
                                 <div id={styles.buttonSide}>
                                     <input type="checkbox" onChange={updateDone} checked={done}></input>
