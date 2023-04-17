@@ -50,7 +50,6 @@ export default function Todos() {
         setTodoText("");
 
         const token = await getToken({ template: "codehooks" });
-        console.log(token)
         let response = await fetch(backend_base + "/todoitems", {
             method: "POST",
             headers: {

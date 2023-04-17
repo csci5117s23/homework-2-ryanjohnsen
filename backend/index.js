@@ -46,7 +46,7 @@ app.use('/todoitems/:id', async (req, res, next) => {
   // let's check access rights for the document being read/updated/replaced/deleted
   const conn = await Datastore.open();
   try {
-      console.log(id);
+      // console.log(id);
       const doc = await conn.getOne('todoitems', id)
       if (doc.userId != userId) {
           // authenticate duser doesn't own this document.

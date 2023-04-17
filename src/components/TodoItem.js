@@ -28,8 +28,6 @@ export default function TodoItem({todo}) {
         });
     }
 
-
-
     return (
         <>
             <div id={styles.todoContainer}>
