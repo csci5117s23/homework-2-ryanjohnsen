@@ -32,7 +32,6 @@ export default function TodoItemPage() {
             });
             
             const data = await response.json();
-            console.log(data)
             setTodos(data);
             setDone(data.done);
             setTodoText(data.text);

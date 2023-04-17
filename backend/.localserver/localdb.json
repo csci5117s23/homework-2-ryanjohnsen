@@ -1,1 +1,18 @@
-[]
+[
+  [
+    "todoitems",
+    {
+      "1878df6121a-d7doezxd3fhkdb": {
+        "created": "2023-04-17T06:45:26.680Z",
+        "userId": "user_2OOwyAKR8SgdWuHcty5VEMkU8IF",
+        "done": false,
+        "text": "i hate hits and this hw, jk lol i totally regret jioning the inegrated program",
+        "_id": "1878df6121a-d7doezxd3fhkdb"
+      }
+    }
+  ],
+  [
+    "_dbmetadata",
+    {}
+  ]
+]
