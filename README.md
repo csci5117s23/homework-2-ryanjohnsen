@@ -15,6 +15,6 @@ https://ryanstodoapp.netlify.app
 
 ## Challenge Task
 
-* I started the challenge task: [yes/no]
-* I completed the challenge task: [yes/no]
+* I started the challenge task: [no]
+* I completed the challenge task: [no]
 
