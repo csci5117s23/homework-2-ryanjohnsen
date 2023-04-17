@@ -15,6 +15,7 @@ export default function TodoItemPage() {
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const [done, setDone] = useState(false);
     const [todoText, setTodoText] = useState("");
+    const [newText, setNewText] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,6 +36,7 @@ export default function TodoItemPage() {
             setTodos(data);
             setDone(data.done);
             setTodoText(data.text);
+            setNewText(data.text);
         }
         fetchData();
     }, [userId]);
@@ -72,9 +74,10 @@ export default function TodoItemPage() {
                 "Authorization": "Bearer " + token
             },
             body: JSON.stringify({
-                text: todoText
+                text: newText
             })
         });
+        setTodoText(newText);
 
     }
     
@@ -103,7 +106,7 @@ export default function TodoItemPage() {
                         <div id={styles.todoItems}>
                             <div id={styles.todoContainer2}>
                                 <div id={styles.textSide}> 
-                                    <textarea id={styles.textareaInput} value={todoText} onChange={(e) => setTodoText(e.target.value)}  cols="30" rows="5"></textarea>
+                                    <textarea id={styles.textareaInput} value={todoText} onChange={(e) =>  {setNewText(e.target.value); setTodoText(e.target.value);}}  cols="30" rows="5"></textarea>
                                 </div>
                                 <div id={styles.buttonSide}>
                                     <input type="checkbox" onChange={updateDone} checked={done}></input>
