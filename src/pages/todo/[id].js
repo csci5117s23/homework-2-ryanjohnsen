@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { useAuth } from "@clerk/clerk-react"
 import Header from "../../components/Header"
 import styles from "../../styles/Todo.module.css"
+import CategoryBar from "../../components/CategoryBar"
+import { getTodoItem, updateTodoItem } from "../../modules/data"
 
 
 const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -11,7 +13,6 @@ const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 export default function TodoItemPage() {
     const router = useRouter()
     const id = router.query.id
-    // console.log(id)
     const [todos, setTodos] = useState("")
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const [done, setDone] = useState(false);
@@ -26,41 +27,21 @@ export default function TodoItemPage() {
             }
 
             const token = await getToken({ template: "codehooks" });
-            const response = await fetch(backend_base + "/todoitems/" + id, {
-                method: "GET",
-                headers: {
-                    // "Accept": "application/json",
-                    // 'Content-Type': 'application/json',
-                    "Authorization": "Bearer " + token
-                }
-            });
+            let response = await getTodoItem(token, id);
             
-            let data = await response.text();
-            setTodoText(data);
+            setTodoText(response);
         }
         fetchData();
     }, [userId]);
-
-    function routeToTodos() {
-        router.push("/todos");
-    }
 
     async function updateDone() {
         console.log("update done");
         setDone(!done);
 
         const token = await getToken({ template: "codehooks" });
-        await fetch(backend_base + "/todoitems/" + id, {
-            method: "PATCH",
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                done: !done
-            })
-        });
+        let response = await updateTodoItem(token, id, {done: !done});
+        console.log(response);
+
     }
 
     async function saveChanges() {
@@ -79,7 +60,7 @@ export default function TodoItemPage() {
             })
         });
 
-
+        setTodoText(todoText);
     }
     
     return (
@@ -89,9 +70,7 @@ export default function TodoItemPage() {
             <Header> </Header>
 
             <div id={styles.mainContent}>
-                <div id={styles.sideBar}>
-                    <h1> Categories </h1>
-                </div>
+                <CategoryBar></CategoryBar>
 
                 <div id={styles.rightSide}>
 
@@ -100,7 +79,7 @@ export default function TodoItemPage() {
                             <h1> Todo Item </h1>
                             <div> 
                                 <button id={styles.saveChangesButton} onClick={saveChanges}> Save Changes </button>
-                                <button id={styles.seeTodoButton} onClick={routeToTodos}> Go back to Todos </button>
+                                <button id={styles.seeTodoButton} onClick={() => router.push("/todos")}> Go back to Todos </button>
                             </div>
                         </div>
 

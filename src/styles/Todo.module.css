@@ -1,4 +1,4 @@
-#sideBar {
+/* #sideBar {
     background-color: lightgreen;
     height: 100vh;
     width: 20%;
@@ -7,11 +7,11 @@
 
 #sideBar h1 {
     margin: 1rem;
-}
+} */
 
 #rightSide {
     background-color: #f2f2f2;
-    width: 80%;
+    width: 70%;
 }
 
 #mainContent {

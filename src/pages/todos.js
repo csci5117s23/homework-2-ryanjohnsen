@@ -6,8 +6,8 @@ import styles from '../styles/Todo.module.css';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useRouter } from 'next/router';
-
-const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+import CategoryBar from '@/components/CategoryBar';
+import { getTodoItems, addTodoItem } from '@/modules/data';
 
 
 export default function Todos() {
@@ -16,8 +16,7 @@ export default function Todos() {
     const [todos, setTodos] = useState([]);
     const router = useRouter();
     const [todoText, setTodoText] = useState("");
-
-    // const token = await getToken({ template: "codehooks" });
+    const [updated, setUpdated] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,53 +26,24 @@ export default function Todos() {
             }
 
             const token = await getToken({ template: "codehooks" });
-            const response = await fetch(backend_base + "/todoitems", {
-                method: "GET",
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-            
-            let data = await response.json();
+            let response = await getTodoItems(token, userId, false);
             // sort by created time
-            data = data.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1);
-            setTodos(data);
-            // setTodos(data);
+            response = response.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1);
+            setTodos(response);
         }
         fetchData();
-    }, [userId]);
+    }, [userId, updated]);
             
-    async function addTodoItem() {
-        console.log("Adding todo item");
-        console.log(todoText);
-        
+    async function addItem() {
         setTodoText("");
 
         const token = await getToken({ template: "codehooks" });
-        let response = await fetch(backend_base + "/todoitems", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                text: todoText
-            })
-        });
-
-        response = await fetch(backend_base + "/todoitems", {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-        let data = await response.json();
-        setTodos(data.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1));
-    }
-
-    function routeToDonePage() {
-        router.push("/done");
+        let todo = {
+            text: todoText,
+            userId: userId,
+        }
+        await addTodoItem(token, todo);
+        setUpdated(!updated);
     }
 
     return (
@@ -82,9 +52,7 @@ export default function Todos() {
             <Header> </Header>
 
             <div id={styles.mainContent}>
-                <div id={styles.sideBar}>
-                    <h1> Categories </h1>
-                </div>
+                <CategoryBar></CategoryBar>
 
                 <div id={styles.rightSide}>
 
@@ -93,8 +61,8 @@ export default function Todos() {
                             <h1> Todo Items </h1>
                             <div> 
                                 <input id={styles.textInput} value={todoText} onChange={e => setTodoText(e.target.value)} type="text" size="30" placeholder="Add a todo item"></input>
-                                <button id={styles.addTodoButton} onClick={addTodoItem}> Add </button>
-                                <button id={styles.seeDoneButton} onClick={routeToDonePage}> See Done </button>
+                                <button id={styles.addTodoButton} onClick={addItem}> Add </button>
+                                <button id={styles.seeDoneButton} onClick={() => router.push("/done")}> See Done </button>
                             </div>
                         </div>
 

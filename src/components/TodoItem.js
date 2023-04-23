@@ -2,8 +2,7 @@ import styles from '../styles/TodoItem.module.css'
 import { useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import Link from 'next/link';
-
-const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+import { updateTodoItem } from '@/modules/data';
 
 export default function TodoItem({todo}) {
 
@@ -15,17 +14,7 @@ export default function TodoItem({todo}) {
         setDone(!done);
 
         const token = await getToken({ template: "codehooks" });
-        await fetch(backend_base + "/todoitems/" + todo._id, {
-            method: "PATCH",
-            headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                done: !done
-            })
-        });
+        await updateTodoItem(token, todo._id, {done: !done})
     }
 
     return (
