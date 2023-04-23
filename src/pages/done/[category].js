@@ -1,20 +1,22 @@
 import { UserButton } from '@clerk/nextjs';
-import TodoItem from '../components/TodoItem';
 import Link from 'next/link';
-import Header from '../components/Header';
-import styles from '../styles/Todo.module.css';
+import Header from '@/components/Header';
+import styles from '@/styles/Todo.module.css';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { useRouter } from 'next/router';
 import CategoryBar from '@/components/CategoryBar';
 import { getTodoItems } from '@/modules/data';
+import TodoItem from '@/components/TodoItem';
+import { getAllTodoItems, getCategory, addTodoItem } from '@/modules/data';
 
-
-export default function DoneTodos() {
+export default function todosWithCategory() {
     // fetch todo item components
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const [todos, setTodos] = useState([]);
     const router = useRouter();
+    const category = router.query.category;
+    const [catText, setCatText] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,13 +27,16 @@ export default function DoneTodos() {
 
             const token = await getToken({ template: "codehooks" });
             let response = await getTodoItems(token, userId, true, null);
-            // sort by created time
             response = response.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1);
             setTodos(response);
+
+            let cat = await getCategory(token, category);
+            let catText = cat[0].category;
+            setCatText(catText);
+
         }
         fetchData();
     }, [userId]);
-        
 
     return (
         <>
@@ -44,18 +49,16 @@ export default function DoneTodos() {
                 <div id={styles.rightSide}>
 
                     <div id={styles.todoContainer}>
-                        <div id={styles.todoHeader}>
-                            <h1> Done Todo Items </h1>
+                        <div id={styles.categoryHeader}>
+                            <h1> Category: {catText} </h1>
                             <div> 
-                                {/* <input id={styles.textInput} value={todoText} onChange={e => setTodoText(e.target.value)} type="text" size="30" placeholder="Add a todo item"></input> */}
-                                {/* <button id={styles.addTodoButton} onClick={addTodoItem}> Add </button> */}
-                                <button id={styles.seeTodoButton} onClick={() => router.push("/todos")}> See Not Done </button>
+                                <button id={styles.seeTodoButton} onClick={() => router.push("/todos/" + category)}> See Not Done </button>
                             </div>
                         </div>
 
                         <div id={styles.todoItems}>
                             {todos.map((todo) => (
-                                todo.done ? <TodoItem key={todo._id} todo={todo}></TodoItem> : <></>
+                                todo.done && catText == todo.category ? <TodoItem key={todo._id} todo={todo}></TodoItem> : <></>
                             ))}
                         </div>
 

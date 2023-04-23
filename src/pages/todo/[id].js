@@ -5,7 +5,9 @@ import { useAuth } from "@clerk/clerk-react"
 import Header from "../../components/Header"
 import styles from "../../styles/Todo.module.css"
 import CategoryBar from "../../components/CategoryBar"
-import { getTodoItem, updateTodoItem } from "../../modules/data"
+import { getTodoItem, updateTodoItem, getCategories } from "../../modules/data"
+import Link from "next/link"
+
 
 
 const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -17,7 +19,8 @@ export default function TodoItemPage() {
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const [done, setDone] = useState(false);
     const [todoText, setTodoText] = useState("");
-    // const [newText, setNewText] = useState("");
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("");
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,8 +31,10 @@ export default function TodoItemPage() {
 
             const token = await getToken({ template: "codehooks" });
             let response = await getTodoItem(token, id);
-            
             setTodoText(response);
+
+            let response2 = await getCategories(token, userId);
+            setCategories(response2);
         }
         fetchData();
     }, [userId]);
@@ -63,6 +68,13 @@ export default function TodoItemPage() {
         setTodoText(todoText);
     }
     
+    async function addTodoItemToCategory(cat) {
+        const token = await getToken({ template: "codehooks" });
+        let response = await updateTodoItem(token, id, {category: cat});
+        console.log(response);
+        setSelectedCategory(cat);
+    }
+
     return (
         <>
             <>
@@ -91,9 +103,22 @@ export default function TodoItemPage() {
                                 <div id={styles.buttonSide}>
                                     <input type="checkbox" onChange={updateDone} checked={done}></input>
                                 </div>
+                                <div id={styles.categorySection}>
+                                    <h1> Add item to a category </h1>
+                                    {categories.map((cat) => (  
+                                        cat.category == selectedCategory ?
+                                        <div id={styles.selectedCategoryItem}>
+                                            <span id={styles.text}> {cat.category} </span>
+                                        </div>
+                                        : 
+                                        <div id={styles.categoryItem}>
+                                            <span id={styles.text}> {cat.category} </span>
+                                            <button id={styles.addCategoryButton} onClick={() => addTodoItemToCategory(cat.category)}> Add </button>
+                                        </div>
+                                    ))}
+                                </div>  
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

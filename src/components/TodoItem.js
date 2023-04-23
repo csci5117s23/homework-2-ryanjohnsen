@@ -14,7 +14,7 @@ export default function TodoItem({todo}) {
         setDone(!done);
 
         const token = await getToken({ template: "codehooks" });
-        await updateTodoItem(token, todo._id, {done: !done})
+        await updateTodoItem(token, todo._id, {done: !done, category: todo.category})
     }
 
     return (

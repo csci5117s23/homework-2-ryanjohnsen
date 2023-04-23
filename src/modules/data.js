@@ -1,7 +1,11 @@
 const backend_base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-export async function getTodoItems(authToken, userId, done) {
-    const response = await fetch(backend_base + "/todoitems" + "?userId=" + userId + "&done=" + done, {
+export async function getTodoItems(authToken, userId, done, category) {
+    let queryString = "?userId=" + userId + "&done=" + done;
+    if (category) {
+        queryString += "&category=" + category._id;
+    }
+    const response = await fetch(backend_base + "/todoitems" + queryString, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + authToken
@@ -10,8 +14,11 @@ export async function getTodoItems(authToken, userId, done) {
     return await response.json();
 }
 
-export async function getAllTodoItems(authToken) {
-    const response = await fetch(backend_base + "/todoitems", {
+export async function getAllTodoItems(authToken, userId, category) {
+    let todoQueryString = "?userId=" + userId + "&done=false";
+    todoQueryString += "&category=" + category;
+    console.log(todoQueryString)
+    const response = await fetch(backend_base + "/todoitems" + todoQueryString, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + authToken
@@ -72,6 +79,28 @@ export async function addCategory(authToken, category) {
 // get task categories
 export async function getCategories(authToken, userId) {
     const response = await fetch(backend_base + "/categories" + "?userId=" + userId, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + authToken
+        }
+    });
+    return await response.json();
+}
+
+// delete task category
+export async function deleteCategory(authToken, categoryId) {
+    const response = await fetch(backend_base + "/categories/" + categoryId, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + authToken
+        }
+    });
+    return await response.json();
+}
+
+// get task category by name
+export async function getCategory(authToken, category) {
+    const response = await fetch(backend_base + "/categories" + "?_id=" + category, {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + authToken

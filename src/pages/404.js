@@ -8,7 +8,6 @@ export default function Custom404() {
             <div id={styles.mainDiv}> 
                 <div id={styles.fourOFourDiv}> 
                     <h1> The page you're looking for ain't here 😔 </h1>
-                    <p> Sorry lil bro  </p>
                     <Link id={styles.backButton} href="/todos" > Go back to todos </Link>
                 </div>
             </div>
